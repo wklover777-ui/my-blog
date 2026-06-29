@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Blog</title>
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/layout.css">
+  <!-- highlight.js themes (one enabled at a time via JS) -->
+  <link id="hljs-light" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css">
+  <link id="hljs-dark" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css" disabled>
+  <script src="js/theme.js"></script>
+</head>
+<body>
+  <header class="site-header">
+    <div class="header-inner">
+      <a href="index.html" class="site-title">My Blog</a>
+      <button id="theme-toggle" class="theme-toggle" onclick="toggleTheme()" aria-label="테마 전환">🌙</button>
+    </div>
+  </header>
+
+  <main class="site-main">
+    <h1 class="page-title">포스트</h1>
+    <div id="post-grid" class="post-grid">
+      <p class="state-message">로딩 중…</p>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <p>© 2026 My Blog</p>
+  </footer>
+
+  <script src="js/posts.js"></script>
+</body>
+</html>

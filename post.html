@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>포스트 — My Blog</title>
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/layout.css">
+  <link rel="stylesheet" href="css/post.css">
+  <link id="hljs-light" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css">
+  <link id="hljs-dark" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css" disabled>
+  <script src="js/theme.js"></script>
+</head>
+<body>
+  <header class="site-header">
+    <div class="header-inner">
+      <a href="index.html" class="site-title">My Blog</a>
+      <button id="theme-toggle" class="theme-toggle" onclick="toggleTheme()" aria-label="테마 전환">🌙</button>
+    </div>
+  </header>
+
+  <main class="post-layout">
+    <a href="index.html" class="back-link">← 목록으로</a>
+    <div id="post-container">
+      <p class="state-message">로딩 중…</p>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <p>© 2026 My Blog</p>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/marked@12.0.0/marked.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script>
+    (async function () {
+      const container = document.getElementById('post-container');
+
+      // Parse hash: post.html#posts/foo.md
+      const file = location.hash.slice(1);
+      if (!file || !file.startsWith('posts/') || !file.endsWith('.md')) {
+        container.innerHTML = '<p class="state-message">포스트를 찾을 수 없습니다.</p>';
+        return;
+      }
+
+      // Configure marked
+      marked.setOptions({
+        gfm: true,
+        breaks: false,
+        highlight: null,
+      });
+
+      try {
+        const res = await fetch(file);
+        if (!res.ok) throw new Error('Not found');
+        const raw = await res.text();
+
+        // Parse frontmatter
+        const { meta, body } = parseFrontmatter(raw);
+
+        // Update page title
+        if (meta.title) document.title = meta.title + ' — My Blog';
+
+        // Render
+        const html = marked.parse(body);
+
+        container.innerHTML = `
+          <header class="post-header">
+            <h1 class="post-title">${escapeHtml(meta.title || '제목 없음')}</h1>
+            <div class="post-meta">
+              ${meta.date ? `<span class="post-date">${formatDate(meta.date)}</span>` : ''}
+              ${meta.tags && meta.tags.length ? `
+                <div class="post-card-tags">
+                  ${meta.tags.map(t => `<span class="tag">${escapeHtml(t)}</span>`).join('')}
+                </div>
+              ` : ''}
+            </div>
+          </header>
+          <article class="post-content">${html}</article>
+        `;
+
+        // Syntax highlighting
+        if (typeof hljs !== 'undefined') {
+          container.querySelectorAll('pre code').forEach(block => {
+            hljs.highlightElement(block);
+          });
+        }
+
+      } catch (err) {
+        container.innerHTML = '<p class="state-message">포스트를 불러오는 중 오류가 발생했습니다.</p>';
+        console.error(err);
+      }
+
+      function parseFrontmatter(text) {
+        const match = text.match(/^---\r?\n([\s\S]*?)\r?\n---\r?\n?([\s\S]*)$/);
+        if (!match) return { meta: {}, body: text };
+
+        const frontmatter = match[1];
+        const body = match[2];
+        const meta = {};
+
+        frontmatter.split(/\r?\n/).forEach(line => {
+          const idx = line.indexOf(':');
+          if (idx === -1) return;
+          const key = line.slice(0, idx).trim();
+          const val = line.slice(idx + 1).trim();
+
+          if (val.startsWith('[') && val.endsWith(']')) {
+            meta[key] = val.slice(1, -1).split(',').map(s => s.trim()).filter(Boolean);
+          } else {
+            meta[key] = val;
+          }
+        });
+
+        return { meta, body };
+      }
+
+      function formatDate(dateStr) {
+        const d = new Date(dateStr + 'T00:00:00');
+        return d.toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric' });
+      }
+
+      function escapeHtml(str) {
+        return String(str)
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;');
+      }
+    })();
+  </script>
+</body>
+</html>
