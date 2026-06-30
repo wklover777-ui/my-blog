@@ -129,6 +129,46 @@
   padding: 0.1rem 0.45rem;
 }
 
+/* App card */
+.app-card {
+  padding: 0;
+  overflow: hidden;
+  text-decoration: none;
+}
+
+.app-preview {
+  width: 100%;
+  height: 200px;
+  overflow: hidden;
+  background: #faf8ef;
+  pointer-events: none;
+}
+
+.app-preview iframe {
+  width: 200%;
+  height: 200%;
+  transform: scale(0.5);
+  transform-origin: top left;
+  border: none;
+}
+
+.app-card .post-card-body {
+  padding: 1.25rem 1.5rem 1.5rem;
+}
+
+.app-card .post-title {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--color-text);
+  margin-bottom: 0.25rem;
+}
+
+.app-card .post-description {
+  font-size: 0.9rem;
+  color: var(--color-text-muted);
+  line-height: 1.5;
+}
+
 /* Post page layout */
 .post-layout {
   max-width: 680px;

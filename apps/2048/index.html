@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>2048</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <div class="container">
+    <header class="header">
+      <div class="title-row">
+        <h1 class="game-title">2048</h1>
+        <div class="scores">
+          <div class="score-box">
+            <div class="score-label">SCORE</div>
+            <div class="score-value" id="score">0</div>
+          </div>
+          <div class="score-box">
+            <div class="score-label">BEST</div>
+            <div class="score-value" id="best">0</div>
+          </div>
+        </div>
+      </div>
+      <div class="header-bottom">
+        <p class="subtitle">타일을 합쳐 <strong>2048</strong>을 만들어보세요!</p>
+        <button class="btn-new" id="btn-new">새 게임</button>
+      </div>
+    </header>
+
+    <main class="game-wrapper">
+      <div class="grid-container" id="grid-container">
+        <!-- 빈 셀 16개 -->
+        <div class="grid-cell"></div>
+        <div class="grid-cell"></div>
+        <div class="grid-cell"></div>
+        <div class="grid-cell"></div>
+        <div class="grid-cell"></div>
+        <div class="grid-cell"></div>
+        <div class="grid-cell"></div>
+        <div class="grid-cell"></div>
+        <div class="grid-cell"></div>
+        <div class="grid-cell"></div>
+        <div class="grid-cell"></div>
+        <div class="grid-cell"></div>
+        <div class="grid-cell"></div>
+        <div class="grid-cell"></div>
+        <div class="grid-cell"></div>
+        <div class="grid-cell"></div>
+
+        <!-- 타일 레이어 -->
+        <div class="tile-container" id="tile-container"></div>
+
+        <!-- 게임 오버 오버레이 -->
+        <div class="overlay" id="overlay-gameover">
+          <div class="overlay-content">
+            <p class="overlay-msg">Game Over!</p>
+            <button class="btn-overlay" id="btn-retry">다시 시작</button>
+          </div>
+        </div>
+
+        <!-- 승리 오버레이 -->
+        <div class="overlay" id="overlay-win">
+          <div class="overlay-content">
+            <p class="overlay-msg">You Win!</p>
+            <button class="btn-overlay" id="btn-continue">계속 플레이</button>
+            <button class="btn-overlay btn-secondary" id="btn-new-win">새 게임</button>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <p>방향키 또는 스와이프로 타일을 이동하세요.</p>
+    </footer>
+  </div>
+
+  <script src="js/game.js"></script>
+  <script src="js/render.js"></script>
+  <script src="js/input.js"></script>
+</body>
+</html>

@@ -1,0 +1,311 @@
+/* ===== 리셋 & 기본 ===== */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --cell-size: 100px;
+  --gap: 10px;
+  --border-radius: 6px;
+  --grid-bg: #bbada0;
+  --cell-bg: #cdc1b4;
+  --page-bg: #faf8ef;
+  --text-dark: #776e65;
+  --text-light: #f9f6f2;
+  --header-text: #776e65;
+  --anim-duration: 200ms;
+}
+
+body {
+  background-color: var(--page-bg);
+  font-family: 'Clear Sans', 'Helvetica Neue', Arial, sans-serif;
+  color: var(--text-dark);
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 20px 10px 40px;
+}
+
+/* ===== 레이아웃 ===== */
+.container {
+  width: 100%;
+  max-width: 500px;
+}
+
+/* ===== 헤더 ===== */
+.header {
+  margin-bottom: 16px;
+}
+
+.title-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.game-title {
+  font-size: 72px;
+  font-weight: 700;
+  color: var(--text-dark);
+  line-height: 1;
+}
+
+.scores {
+  display: flex;
+  gap: 6px;
+}
+
+.score-box {
+  background: var(--grid-bg);
+  color: var(--text-light);
+  border-radius: 4px;
+  padding: 6px 14px;
+  text-align: center;
+  min-width: 64px;
+}
+
+.score-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: #eee4da;
+}
+
+.score-value {
+  font-size: 22px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.header-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.subtitle {
+  font-size: 14px;
+  color: var(--text-dark);
+}
+
+.btn-new {
+  background: #8f7a66;
+  color: var(--text-light);
+  border: none;
+  border-radius: 4px;
+  padding: 8px 18px;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.btn-new:hover {
+  background: #7a6859;
+}
+
+/* ===== 게임 그리드 ===== */
+.game-wrapper {
+  position: relative;
+}
+
+.grid-container {
+  position: relative;
+  background: var(--grid-bg);
+  border-radius: 8px;
+  padding: var(--gap);
+  display: grid;
+  grid-template-columns: repeat(4, var(--cell-size));
+  grid-template-rows: repeat(4, var(--cell-size));
+  gap: var(--gap);
+  /* 그리드가 tile-container와 overlay의 기준 */
+  width: calc(4 * var(--cell-size) + 5 * var(--gap));
+  margin: 0 auto;
+}
+
+.grid-cell {
+  background: var(--cell-bg);
+  border-radius: var(--border-radius);
+  width: var(--cell-size);
+  height: var(--cell-size);
+}
+
+/* ===== 타일 컨테이너 ===== */
+.tile-container {
+  position: absolute;
+  top: var(--gap);
+  left: var(--gap);
+  right: var(--gap);
+  bottom: var(--gap);
+  /* pointer-events: none so clicks pass through to grid */
+  pointer-events: none;
+}
+
+/* ===== 타일 공통 ===== */
+.tile {
+  position: absolute;
+  width: var(--cell-size);
+  height: var(--cell-size);
+  border-radius: var(--border-radius);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 36px;
+  font-weight: 700;
+  line-height: 1;
+  transition: top var(--anim-duration) ease, left var(--anim-duration) ease;
+  z-index: 10;
+}
+
+/* 글자 크기 조절 */
+.tile[data-value="128"],
+.tile[data-value="256"],
+.tile[data-value="512"] {
+  font-size: 28px;
+}
+
+.tile[data-value="1024"],
+.tile[data-value="2048"] {
+  font-size: 22px;
+}
+
+.tile.tile-super {
+  font-size: 18px;
+}
+
+/* ===== 타일 색상 ===== */
+.tile-2    { background: #eee4da; color: #776e65; }
+.tile-4    { background: #ede0c8; color: #776e65; }
+.tile-8    { background: #f2b179; color: #f9f6f2; }
+.tile-16   { background: #f59563; color: #f9f6f2; }
+.tile-32   { background: #f67c5f; color: #f9f6f2; }
+.tile-64   { background: #f65e3b; color: #f9f6f2; }
+.tile-128  { background: #edcf72; color: #f9f6f2; }
+.tile-256  { background: #edcc61; color: #f9f6f2; }
+.tile-512  { background: #edc850; color: #f9f6f2; }
+.tile-1024 { background: #edc53f; color: #f9f6f2; }
+.tile-2048 { background: #edc22e; color: #f9f6f2; box-shadow: 0 0 24px 8px rgba(237,194,46,0.55); }
+.tile-super { background: #3c3a32; color: #f9f6f2; }
+
+/* ===== 애니메이션 ===== */
+@keyframes appear {
+  0%   { transform: scale(0); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+@keyframes pop {
+  0%   { transform: scale(1); }
+  50%  { transform: scale(1.2); }
+  100% { transform: scale(1); }
+}
+
+.tile-new {
+  animation: appear var(--anim-duration) ease forwards;
+}
+
+.tile-merged {
+  animation: pop var(--anim-duration) ease forwards;
+  z-index: 20;
+}
+
+/* ===== 오버레이 ===== */
+.overlay {
+  display: none;
+  position: absolute;
+  inset: 0;
+  border-radius: 8px;
+  background: rgba(238, 228, 218, 0.73);
+  z-index: 100;
+  justify-content: center;
+  align-items: center;
+}
+
+.overlay.active {
+  display: flex;
+}
+
+.overlay-content {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.overlay-msg {
+  font-size: 52px;
+  font-weight: 700;
+  color: var(--text-dark);
+}
+
+.btn-overlay {
+  background: #8f7a66;
+  color: var(--text-light);
+  border: none;
+  border-radius: 4px;
+  padding: 10px 24px;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.15s;
+  min-width: 120px;
+}
+
+.btn-overlay:hover {
+  background: #7a6859;
+}
+
+.btn-secondary {
+  background: #bbada0;
+}
+
+.btn-secondary:hover {
+  background: #a89990;
+}
+
+/* ===== 푸터 ===== */
+.footer {
+  margin-top: 16px;
+  text-align: center;
+  font-size: 13px;
+  color: #9f8c7d;
+}
+
+/* ===== 반응형 (480px 이하) ===== */
+@media (max-width: 480px) {
+  :root {
+    --cell-size: calc((100vw - 60px) / 4);
+    --gap: 8px;
+  }
+
+  .game-title {
+    font-size: 48px;
+  }
+
+  .tile {
+    font-size: 24px;
+  }
+
+  .tile[data-value="128"],
+  .tile[data-value="256"],
+  .tile[data-value="512"] {
+    font-size: 20px;
+  }
+
+  .tile[data-value="1024"],
+  .tile[data-value="2048"] {
+    font-size: 16px;
+  }
+
+  .tile.tile-super {
+    font-size: 13px;
+  }
+
+  .overlay-msg {
+    font-size: 36px;
+  }
+}
