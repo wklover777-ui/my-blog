@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>포스트 — My Blog</title>
+  <meta name="description" content="My Blog 포스트">
   <link rel="stylesheet" href="css/base.css">
   <link rel="stylesheet" href="css/layout.css">
   <link rel="stylesheet" href="css/post.css">
@@ -32,37 +33,35 @@
 
   <script src="https://cdn.jsdelivr.net/npm/marked@12.0.0/marked.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.1.6/purify.min.js"></script>
   <script>
     (async function () {
       const container = document.getElementById('post-container');
 
-      // Parse hash: post.html#posts/foo.md
-      const file = location.hash.slice(1);
-      if (!file || !file.startsWith('posts/') || !file.endsWith('.md')) {
+      // Parse hash: post.html#posts/foo.md (encodeURIComponent로 인코딩된 경우 디코딩)
+      const file = decodeURIComponent(location.hash.slice(1));
+      if (!file || !file.startsWith('posts/') || !file.endsWith('.md') || file.includes('..')) {
         container.innerHTML = '<p class="state-message">포스트를 찾을 수 없습니다.</p>';
         return;
       }
 
-      // Configure marked
-      marked.setOptions({
-        gfm: true,
-        breaks: false,
-        highlight: null,
-      });
-
       try {
         const res = await fetch(file);
         if (!res.ok) throw new Error('Not found');
-        const raw = await res.text();
+        // BOM 제거 후 frontmatter 파싱 (#6)
+        const raw = (await res.text()).replace(/^﻿/, '');
 
         // Parse frontmatter
         const { meta, body } = parseFrontmatter(raw);
 
-        // Update page title
+        // Update page title & meta description
         if (meta.title) document.title = meta.title + ' — My Blog';
+        if (meta.description) {
+          document.querySelector('meta[name="description"]').setAttribute('content', meta.description);
+        }
 
-        // Render
-        const html = marked.parse(body);
+        // marked v12 API + DOMPurify sanitize (#5, #1)
+        const html = DOMPurify.sanitize(marked.parse(body, { gfm: true, breaks: false }));
 
         container.innerHTML = `
           <header class="post-header">

@@ -1,5 +1,12 @@
 [
   {
+    "file": "2026-06-30-css-custom-properties.md",
+    "title": "CSS 변수로 테마 시스템 만들기",
+    "date": "2026-06-30",
+    "description": "CSS 커스텀 프로퍼티(변수)를 활용하면 라이트/다크 테마 전환을 깔끔하게 구현할 수 있다.",
+    "tags": ["CSS", "웹개발", "다크모드"]
+  },
+  {
     "file": "today-i-learned.md",
     "title": "오늘 배운 것",
     "date": "2026-06-29",

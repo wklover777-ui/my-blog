@@ -158,6 +158,7 @@ window.Tools = { get currentTool() { return currentTool; }, setTool };
 // ===== 초기화 =====
 document.addEventListener('DOMContentLoaded', () => {
   Canvas.initCanvas();
+  Canvas.drawAll();
   Palette.renderPalette();
   Palette.setColor('#000000');
   Export.loadFromLocal();

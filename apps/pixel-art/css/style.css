@@ -69,6 +69,11 @@ body {
   color: #ffffff;
 }
 
+#btn-toggle-grid.active {
+  background: #0f3460;
+  color: #ffffff;
+}
+
 /* Canvas wrapper */
 .canvas-wrapper {
   position: relative;

@@ -34,8 +34,7 @@ function initCanvas() {
       pixels[r][c] = '';
     }
   }
-
-  drawAll();
+  // drawAll()은 호출하지 않음 — 리사이즈 시 픽셀 복원 후 호출
 }
 
 function drawAll() {
@@ -139,10 +138,7 @@ function clearAll() {
 function toggleGrid() {
   showGrid = !showGrid;
   const btn = document.getElementById('btn-toggle-grid');
-  if (btn) {
-    btn.style.background = showGrid ? '#0f3460' : '';
-    btn.style.color = showGrid ? '#ffffff' : '';
-  }
+  if (btn) btn.classList.toggle('active', showGrid);
   drawAll();
 }
 

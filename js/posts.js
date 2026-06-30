@@ -7,8 +7,12 @@ async function loadPosts() {
     if (!res.ok) throw new Error('Failed to load posts');
     const posts = await res.json();
 
-    // Sort by date descending
-    posts.sort((a, b) => new Date(b.date) - new Date(a.date));
+    // Sort by date descending (날짜 누락/오류 시 맨 뒤로)
+    posts.sort((a, b) => {
+      const da = a.date ? new Date(a.date) : new Date(0);
+      const db = b.date ? new Date(b.date) : new Date(0);
+      return db - da;
+    });
 
     if (posts.length === 0) {
       grid.innerHTML = '<p class="state-message">아직 작성된 포스트가 없습니다.</p>';
@@ -16,7 +20,7 @@ async function loadPosts() {
     }
 
     grid.innerHTML = posts.map(post => `
-      <article class="post-card" onclick="location.href='post.html#posts/${post.file}'">
+      <a href="post.html#posts/${encodeURIComponent(post.file)}" class="post-card">
         <h2 class="post-card-title">${escapeHtml(post.title)}</h2>
         ${post.description ? `<p class="post-card-description">${escapeHtml(post.description)}</p>` : ''}
         <div class="post-card-meta">
@@ -27,7 +31,7 @@ async function loadPosts() {
             </div>
           ` : ''}
         </div>
-      </article>
+      </a>
     `).join('');
   } catch (err) {
     grid.innerHTML = '<p class="state-message">포스트를 불러오는 중 오류가 발생했습니다.</p>';
@@ -36,8 +40,9 @@ async function loadPosts() {
 }
 
 function formatDate(dateStr) {
+  if (!dateStr) return '날짜 없음';
   const d = new Date(dateStr + 'T00:00:00');
-  return d.toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric' });
+  return isNaN(d) ? '잘못된 날짜' : d.toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric' });
 }
 
 function escapeHtml(str) {
