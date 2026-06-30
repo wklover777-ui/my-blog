@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pixel Art Editor</title>
+  <base href="/apps/pixel-art/" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <a class="back-link" href="../../index.html">← 블로그로</a>
+
+  <div class="app-container">
+    <header class="app-header">
+      <h1>🎨 Pixel Art Editor</h1>
+      <div class="header-controls">
+        <button id="btn-toggle-grid" onclick="Canvas.toggleGrid()">격자선 토글</button>
+        <button id="btn-clear" onclick="Canvas.clearAll()">전체 지우기</button>
+        <button id="btn-undo" onclick="History.undo()">Undo</button>
+        <button id="btn-redo" onclick="History.redo()">Redo</button>
+      </div>
+    </header>
+
+    <div class="canvas-wrapper">
+      <canvas id="canvas"></canvas>
+      <canvas id="grid-canvas"></canvas>
+    </div>
+
+    <div class="toolbar">
+      <div class="tool-buttons">
+        <button class="tool-btn active" id="tool-pen" onclick="Tools.setTool('pen')" title="펜 (P)">✏️ 펜</button>
+        <button class="tool-btn" id="tool-eraser" onclick="Tools.setTool('eraser')" title="지우개 (E)">🧹 지우개</button>
+        <button class="tool-btn" id="tool-fill" onclick="Tools.setTool('fill')" title="채우기 (F)">🪣 채우기</button>
+        <button class="tool-btn" id="tool-eyedropper" onclick="Tools.setTool('eyedropper')" title="스포이드 (I)">💉 스포이드</button>
+      </div>
+      <div class="current-color-wrap">
+        <span class="current-color-label">현재 색</span>
+        <div id="current-color-box" class="current-color-box"></div>
+      </div>
+    </div>
+
+    <section class="palette-section">
+      <div class="palette-title">팔레트</div>
+      <div id="palette-grid" class="palette-grid"></div>
+
+      <div class="palette-title recent-title">최근 사용</div>
+      <div id="recent-colors" class="palette-grid recent-grid"></div>
+
+      <div class="custom-color-wrap">
+        <label for="custom-color-picker" class="custom-color-btn">+ 커스텀 색상</label>
+        <input type="color" id="custom-color-picker" style="display:none" />
+      </div>
+    </section>
+
+    <section class="export-section">
+      <select id="export-size">
+        <option value="16">16×16</option>
+        <option value="64">64×64</option>
+        <option value="128">128×128</option>
+      </select>
+      <button id="btn-export" onclick="Export.exportPNG(parseInt(document.getElementById('export-size').value))">
+        PNG 저장
+      </button>
+    </section>
+  </div>
+
+  <script src="js/canvas.js"></script>
+  <script src="js/palette.js"></script>
+  <script src="js/history.js"></script>
+  <script src="js/tools.js"></script>
+  <script src="js/export.js"></script>
+</body>
+</html>
